@@ -1,10 +1,4 @@
 import React, { useState, useEffect } from 'react';
-
-// Blueprint Styles
-import "normalize.css";
-import "@blueprintjs/core/lib/css/blueprint.css";
-import "@blueprintjs/icons/lib/css/blueprint-icons.css";
-
 import styled, { createGlobalStyle } from 'styled-components';
 import { Spinner, Intent, Classes, Colors } from "@blueprintjs/core";
 
@@ -58,12 +52,12 @@ const App = () => {
     <>
       <div className={Classes.DARK}>
         <Header />
-          <PageContent>
-          {client && isOnline
-            ? <Heater client={client} topic="stove" />
-            : <Spinner intent={Intent.Primary} size={Spinner.SIZE_LARGE} />
-          }
-          </PageContent>
+        <PageContent>
+        {client && isOnline
+          ? <Heater client={client} topic="stove" />
+          : <Spinner intent={Intent.Primary} size={Spinner.SIZE_LARGE} />
+        }
+        </PageContent>
       </div>
       <GlobalStyle />
     </>
