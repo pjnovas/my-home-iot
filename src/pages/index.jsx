@@ -7,17 +7,20 @@ import { NOT_FOUND } from 'redux-first-router';
 import Home from './home';
 import NotFound from './notFound';
 import Heater from './heater';
+import Power from './power';
 
 export const components = {
   PAGE_HOME: 'Home',
   [NOT_FOUND]: 'NotFound',
-  PAGE_HEATER: 'Heater'
+  PAGE_HEATER: 'Heater',
+  PAGE_POWER: 'Power'
 };
 
 const Pages = {
   Home,
   NotFound,
-  Heater
+  Heater,
+  Power
 };
 
 export const initialState = { current: components.PAGE_HOME };

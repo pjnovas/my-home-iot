@@ -28,9 +28,8 @@ const Heater = ({ online, onAction }) => (
   <Layout>
     <Content>
       <Status online={online} />
-      <Button onClick={() => onAction('0')} disabled={!online} intent={Intent.PRIMARY} icon="square" text="OFF" large />
-      <Button onClick={() => onAction('1')} disabled={!online} intent={Intent.WARNING} icon="menu" text="LOW" large />
-      <Button onClick={() => onAction('2')} disabled={!online} intent={Intent.DANGER} icon="list" text="HIGH" large />
+      <Button onClick={() => onAction('0')} disabled={!online} intent={Intent.DANGER} icon="square" text="OFF" large />
+      <Button onClick={() => onAction('1')} disabled={!online} intent={Intent.SUCCESS} icon="menu" text="ON" large />
     </Content>
   </Layout>
 )
@@ -49,14 +48,14 @@ export default compose(
   connect(
     compose(
       online => ({ online }),
-      overEvery(prop('mqtt.online'), prop('heater.online'))
+      overEvery(prop('mqtt.online'), prop('power.online'))
     ),
     dispatch => ({
-      onMount: () => dispatch({ type: 'MQTT/SUBSCRIBE', payload: 'stove/status' }),
-      onUnmount: () => dispatch({ type: 'MQTT/UNSUBSCRIBE', payload: 'stove/status' }),
+      onMount: () => dispatch({ type: 'MQTT/SUBSCRIBE', payload: 'power-1/status' }),
+      onUnmount: () => dispatch({ type: 'MQTT/UNSUBSCRIBE', payload: 'power-1/status' }),
       onAction: message => dispatch({
         type: 'MQTT/PUBLISH',
-        payload: { topic: 'stove/heat', message }
+        payload: { topic: 'power-1/power', message }
       }),
     })
   ),

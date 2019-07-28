@@ -26,6 +26,7 @@ const Header = () => (
     <NavbarHeading>IoT</NavbarHeading>
     <NavbarDivider />
       <NavMenuItem icon="flash" text="Heater" to="PAGE_HEATER" />
+      <NavMenuItem icon="power" text="Power" to="PAGE_POWER" />
     </NavbarGroup>
   </Navbar>
 )
