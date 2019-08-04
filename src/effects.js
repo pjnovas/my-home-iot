@@ -7,7 +7,7 @@ const MQTTUri = process.env.REACT_APP_MQTT_URI;
 
 const setIsOnline = createAction('MQTT/SET_STATUS');
 const messageStatus = createAction('MQTT/MESSAGE/STATUS');
-// const message = createAction('MQTT/MESSAGE');
+const messageArrived = createAction('MQTT/MESSAGE');
 
 function createClientChannel(client) {
   return eventChannel(emit => {
@@ -69,7 +69,7 @@ function* onMessage({ topic, data }) {
     return;
   }
 
-  yield put(message({ topic, message }));
+  yield put(messageArrived({ topic, message }));
 }
 
 function* connectToMQTT() {

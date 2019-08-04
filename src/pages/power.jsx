@@ -10,7 +10,11 @@ import overEvery from 'lodash/overEvery';
 import styled from 'styled-components';
 import Layout from 'components/layout';
 import Status from 'components/status'
-import withMountEvents from 'hoc/withMountEvents';
+
+const PowerStatus = Status.of({
+  topic: 'power-1',
+  path: 'power'
+});
 
 const Content = styled.div`
   display: flex;
@@ -24,40 +28,35 @@ const Content = styled.div`
   }
 `;
 
-const Heater = ({ online, onAction }) => (
+const Power = ({ online, onAction }) => (
   <Layout>
     <Content>
-      <Status online={online} />
+      <PowerStatus />
       <Button onClick={() => onAction('0')} disabled={!online} intent={Intent.DANGER} icon="square" text="OFF" large />
       <Button onClick={() => onAction('1')} disabled={!online} intent={Intent.SUCCESS} icon="menu" text="ON" large />
     </Content>
   </Layout>
 )
 
-Heater.propTypes = {
+Power.propTypes = {
   online: PropTypes.bool,
   onAction: PropTypes.func
 };
 
-Heater.defaultProps = {
+Power.defaultProps = {
   online: false,
   onAction: () => {}
 };
 
-export default compose(
-  connect(
-    compose(
-      online => ({ online }),
-      overEvery(prop('mqtt.online'), prop('power.online'))
-    ),
-    dispatch => ({
-      onMount: () => dispatch({ type: 'MQTT/SUBSCRIBE', payload: 'power-1/status' }),
-      onUnmount: () => dispatch({ type: 'MQTT/UNSUBSCRIBE', payload: 'power-1/status' }),
-      onAction: message => dispatch({
-        type: 'MQTT/PUBLISH',
-        payload: { topic: 'power-1/power', message }
-      }),
-    })
+export default connect(
+  compose(
+    online => ({ online }),
+    overEvery(prop('mqtt.online'), prop('power.online'))
   ),
-  withMountEvents()
-)(Heater);
+  dispatch => ({
+    onAction: message => dispatch({
+      type: 'MQTT/PUBLISH',
+      payload: { topic: 'power-1/power', message }
+    }),
+  })
+)(Power);

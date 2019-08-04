@@ -8,19 +8,22 @@ import Home from './home';
 import NotFound from './notFound';
 import Heater from './heater';
 import Power from './power';
+import Tower from './tower';
 
 export const components = {
   PAGE_HOME: 'Home',
   [NOT_FOUND]: 'NotFound',
   PAGE_HEATER: 'Heater',
-  PAGE_POWER: 'Power'
+  PAGE_POWER: 'Power',
+  PAGE_TOWER: 'Tower'
 };
 
 const Pages = {
   Home,
   NotFound,
   Heater,
-  Power
+  Power,
+  Tower
 };
 
 export const initialState = { current: components.PAGE_HOME };

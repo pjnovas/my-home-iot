@@ -1,6 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
+import { connect } from 'react-redux';
+
+import compose from 'lodash/fp/compose';
+import prop from 'lodash/fp/prop';
+import overEvery from 'lodash/overEvery';
+
 import { Intent, Tag, Colors } from "@blueprintjs/core";
+import withMountEvents from 'hoc/withMountEvents';
 
 const StatusCtn = styled.div`
   margin-bottom: 20px;
@@ -29,5 +36,19 @@ const Status = ({ online }) => (
       >{online ? 'ONLINE' : 'OFFLINE'}</Tag>
   </StatusCtn>
 )
+
+Status.of = ({ topic, path }) => compose(
+  connect(
+    compose(
+      online => ({ online }),
+      overEvery(prop('mqtt.online'), prop(`${path}.online`))
+    ),
+    dispatch => ({
+      onMount: () => dispatch({ type: 'MQTT/SUBSCRIBE', payload: `${topic}/status` }),
+      onUnmount: () => dispatch({ type: 'MQTT/UNSUBSCRIBE', payload: `${topic}/status` }),
+    })
+  ),
+  withMountEvents()
+)(Status);
 
 export default Status;

@@ -1,6 +1,9 @@
 import { combineReducers } from 'redux';
 import { handleActions } from 'redux-actions';
 
+import cloneDeep from 'lodash/cloneDeep';
+import set from 'lodash/set';
+
 import router from 'router';
 import { reducer as pages } from 'pages';
 
@@ -31,6 +34,21 @@ const power = handleActions({
   ...statusInitial
 });
 
+const tower = handleActions({
+  ...status('TOWER'),
+  'MQTT/MESSAGE': (state, { payload }) => {
+    if (payload.topic && payload.topic.includes(state.topic)) {
+      const newState = cloneDeep(state);
+      const prop = payload.topic.replace(`${state.topic}/`, '').replace(/\//g, '.');
+      return set(newState, prop, payload.message);
+    }
+    return state;
+  }
+}, {
+  topic: 'tower-1',
+  ...statusInitial
+});
+
 const mqtt = handleActions({
   'MQTT/SET_STATUS': (state, { payload }) => ({
     ...state,
@@ -45,5 +63,6 @@ export default combineReducers({
   pages,
   mqtt,
   power,
-  heater
+  heater,
+  tower
 });

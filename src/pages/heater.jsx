@@ -10,7 +10,11 @@ import overEvery from 'lodash/overEvery';
 import styled from 'styled-components';
 import Layout from 'components/layout';
 import Status from 'components/status'
-import withMountEvents from 'hoc/withMountEvents';
+
+const HeaterStatus = Status.of({
+  topic: 'stove',
+  path: 'heater'
+});
 
 const Content = styled.div`
   display: flex;
@@ -27,7 +31,7 @@ const Content = styled.div`
 const Heater = ({ online, onAction }) => (
   <Layout>
     <Content>
-      <Status online={online} />
+      <HeaterStatus />
       <Button onClick={() => onAction('0')} disabled={!online} intent={Intent.PRIMARY} icon="square" text="OFF" large />
       <Button onClick={() => onAction('1')} disabled={!online} intent={Intent.WARNING} icon="menu" text="LOW" large />
       <Button onClick={() => onAction('2')} disabled={!online} intent={Intent.DANGER} icon="list" text="HIGH" large />
@@ -45,20 +49,15 @@ Heater.defaultProps = {
   onAction: () => {}
 };
 
-export default compose(
-  connect(
-    compose(
-      online => ({ online }),
-      overEvery(prop('mqtt.online'), prop('heater.online'))
-    ),
-    dispatch => ({
-      onMount: () => dispatch({ type: 'MQTT/SUBSCRIBE', payload: 'stove/status' }),
-      onUnmount: () => dispatch({ type: 'MQTT/UNSUBSCRIBE', payload: 'stove/status' }),
-      onAction: message => dispatch({
-        type: 'MQTT/PUBLISH',
-        payload: { topic: 'stove/heat', message }
-      }),
-    })
+export default connect(
+  compose(
+    online => ({ online }),
+    overEvery(prop('mqtt.online'), prop('heater.online'))
   ),
-  withMountEvents()
+  dispatch => ({
+    onAction: message => dispatch({
+      type: 'MQTT/PUBLISH',
+      payload: { topic: 'stove/heat', message }
+    }),
+  })
 )(Heater);

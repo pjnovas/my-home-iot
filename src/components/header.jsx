@@ -25,6 +25,7 @@ const Header = () => (
     <NavbarGroup align={Alignment.LEFT}>
     <NavbarHeading>IoT</NavbarHeading>
     <NavbarDivider />
+      <NavMenuItem icon="cell-tower" text="Tower" to="PAGE_TOWER" />
       <NavMenuItem icon="flash" text="Heater" to="PAGE_HEATER" />
       <NavMenuItem icon="power" text="Power" to="PAGE_POWER" />
     </NavbarGroup>
