@@ -6,7 +6,7 @@ import prop from 'lodash/fp/prop';
 import compose from 'lodash/fp/compose';
 
 import styled from 'styled-components';
-import { Icon, Divider } from "@blueprintjs/core";
+import { Icon, Tag as BPTag, Card as BPCard, Intent, ButtonGroup, Button } from "@blueprintjs/core";
 
 import Layout from 'components/layout';
 import Status from 'components/status';
@@ -24,13 +24,42 @@ const Content = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
+  padding: 10px;
+`;
+
+const Card = styled(BPCard)`
+  max-width: 600px;
+  margin: 5px auto;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  padding: 10px;
+  padding-bottom: 40px;
+  position: relative;
+
+  .bp3-tag {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+  }
+`;
+
+const Buttons = styled(ButtonGroup)`
+  flex: 1 0 100%;
+  justify-content: center;
+  margin-top: 5px;
+
+  .bp3-button {
+    min-width: 80px;
+  }
 `;
 
 const Values = styled.div`
   display: flex;
   flex-direction: column;
-  flex: 1;
+  flex: 1 0 auto;
   align-items: stretch;
+  justify-content: center;
 `;
 
 const MqttValue = styled.div`
@@ -38,7 +67,8 @@ const MqttValue = styled.div`
   font-size: 1.5em;
   margin: 0.25em 0;
   align-self: center;
-  flex: 1;
+  flex: 1 0 auto;
+  justify-content: center;
 `;
 
 const EnvTemp = withMqttValue({
@@ -68,27 +98,27 @@ const WaterTemp = withMqttValue({
 const WaterEC = withMqttValue({
   topic: `${TOPIC}/water/ec`,
   path: `${PATH}.water.ec`,
-  render: value => <span><Icon iconSize={20} icon="pulse" /> {value} siemens</span>
+  render: value => <span><Icon iconSize={20} icon="pulse" /> {value} s</span>
 })(MqttValue);
 
 const WaterTDS = withMqttValue({
   topic: `${TOPIC}/water/tds`,
   path: `${PATH}.water.tds`,
-  render: value => <span>TDS {value} PPM</span>
+  render: value => <span><Icon iconSize={20} icon="heatmap" /> {parseInt(value, 10)} ppm</span>
 })(MqttValue);
 
 const PumpState = withMqttValue({
   topic: `${TOPIC}/water/pump/state`,
   path: `${PATH}.water.pump.state`,
   render: value => <span><Icon iconSize={20} icon="power" /> {
-    Number(value) === 0 ? 'OFF' : (value === 1 ? 'ON' : 'ERROR')
+    ['OFF', 'ON', 'LOW LEVEL', 'NO FLOW'][Number(value)]
   }</span>
 })(MqttValue);
 
 const PumpFlow = withMqttValue({
   topic: `${TOPIC}/water/pump/flow`,
   path: `${PATH}.water.pump.flow`,
-  render: value => <span><Icon iconSize={20} icon="refresh" /> {value} lts/h</span>
+  render: value => <span><Icon iconSize={20} icon="dashboard" /> {value} lts/h</span>
 })(MqttValue);
 
 const BoxTemp = withMqttValue({
@@ -97,26 +127,52 @@ const BoxTemp = withMqttValue({
   render: value => <span><Icon iconSize={20} icon="flash" /> {value}°</span>
 })(MqttValue);
 
-const Tower = ({ online }) => (
+const oneSec = 1000;
+const hours3 = 10800;
+const getDateString = secs => (new Date(secs * oneSec + hours3 * oneSec)).toLocaleString()
+
+const BoxTime = withMqttValue({
+  topic: `${TOPIC}/box/time`,
+  path: `${PATH}.box.time`,
+  render: value => <span><Icon iconSize={20} icon="time" /> {
+    value ? getDateString(value) : ''
+  }</span>
+})(MqttValue);
+
+const Title = props => <BPTag minimal large intent={Intent.PRIMARY} {...props}/>
+
+const Tower = ({ online, onAction }) => (
   <Layout>
     <Content>
       <TowerStatus />
-      { online && 
-        <Values>
+      <Values>
+        <Card>
+          <Title>Environment</Title>
           <EnvTemp />
           <EnvHum />
           <EnvLight />
-          <Divider />
+        </Card>
+        <Card>
+          <Title>Water</Title>
           <WaterTemp />
           <WaterEC />
           <WaterTDS />
-          <Divider />
+        </Card>
+        <Card>
+          <Title>Pump</Title>
           <PumpState />
           <PumpFlow />
-          <Divider />
+          <Buttons>
+            <Button onClick={() => onAction('1')} large icon="play" intent={Intent.SUCCESS} disabled={!online}/>
+            <Button onClick={() => onAction('0')} large icon="stop" intent={Intent.DANGER} disabled={!online}/>
+          </Buttons>
+        </Card>
+        <Card>
+          <Title>System</Title>
           <BoxTemp />
-        </Values>
-      }
+          <BoxTime />
+        </Card>
+      </Values>
     </Content>
   </Layout>
 )
@@ -133,5 +189,11 @@ export default connect(
   compose(
     online => ({ online }),
     prop('mqtt.online')
-  )
+  ),
+  dispatch => ({
+    onAction: message => dispatch({
+      type: 'MQTT/PUBLISH',
+      payload: { topic: `${TOPIC}/water/pump/power`, message }
+    }),
+  })
 )(Tower);
