@@ -7,6 +7,7 @@ import compose from 'lodash/fp/compose';
 
 import styled from 'styled-components';
 import { Icon, Tag as BPTag, Card as BPCard, Intent, ButtonGroup, Button } from "@blueprintjs/core";
+import { WiHorizonAlt, WiHumidity, WiThermometer } from "react-icons/wi";
 
 import Layout from 'components/layout';
 import Status from 'components/status';
@@ -69,30 +70,39 @@ const MqttValue = styled.div`
   align-self: center;
   flex: 1 0 auto;
   justify-content: center;
+
+  span {
+    display: flex;
+    align-items: center;
+
+    .bp3-icon{
+      margin: 0 0.2em;
+    }
+  }
 `;
 
 const EnvTemp = withMqttValue({
   topic: `${TOPIC}/env/temp`,
   path: `${PATH}.env.temp`,
-  render: value => <span><Icon iconSize={20} icon="flash" /> {value}°</span>
+  render: value => <span><Icon icon={<WiThermometer size="1.4em" />} /> {value}°</span>
 })(MqttValue);
 
 const EnvHum = withMqttValue({
   topic: `${TOPIC}/env/hum`,
   path: `${PATH}.env.hum`,
-  render: value => <span><Icon iconSize={20} icon="tint" /> {value}%</span>
+  render: value => <span><Icon icon={<WiHumidity size="1.4em" />} /> {value}%</span>
 })(MqttValue);
 
 const EnvLight = withMqttValue({
   topic: `${TOPIC}/env/light`,
   path: `${PATH}.env.light`,
-  render: value => <span><Icon iconSize={20} icon="lightbulb" /> {value}%</span>
+  render: value => <span><Icon icon={<WiHorizonAlt size="1.4em" />} /> {value}%</span>
 })(MqttValue);
 
 const WaterTemp = withMqttValue({
   topic: `${TOPIC}/water/temp`,
   path: `${PATH}.water.temp`,
-  render: value => <span><Icon iconSize={20} icon="flash" /> {value}°</span>
+  render: value => <span><Icon icon={<WiThermometer size="1.4em" />} /> {value}°</span>
 })(MqttValue);
 
 const WaterEC = withMqttValue({
@@ -124,7 +134,7 @@ const PumpFlow = withMqttValue({
 const BoxTemp = withMqttValue({
   topic: `${TOPIC}/box/temp`,
   path: `${PATH}.box.temp`,
-  render: value => <span><Icon iconSize={20} icon="flash" /> {value}°</span>
+  render: value => <span><Icon icon={<WiThermometer size="1.4em" />} /> {value}°</span>
 })(MqttValue);
 
 const oneSec = 1000;
