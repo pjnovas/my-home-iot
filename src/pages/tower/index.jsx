@@ -11,6 +11,7 @@ import { WiHorizonAlt, WiHumidity, WiThermometer } from "react-icons/wi";
 
 import Layout from 'components/layout';
 import Status from 'components/status';
+import Trend from './Trend';
 import withMqttValue from 'hoc/withMqttValue';
 
 const TOPIC = 'tower-1';
@@ -84,57 +85,100 @@ const MqttValue = styled.div`
 const EnvTemp = withMqttValue({
   topic: `${TOPIC}/env/temp`,
   path: `${PATH}.env.temp`,
-  render: value => <span><Icon icon={<WiThermometer size="1.4em" />} /> {value}°</span>
+  render: value => (
+    <span>
+      <Icon icon={<WiThermometer size="1.4em" />} /> {value}°
+      <Trend topic={`${TOPIC}_env_temp`} lastHours={2} measure="°" />
+    </span>
+  )
 })(MqttValue);
 
 const EnvHum = withMqttValue({
   topic: `${TOPIC}/env/hum`,
   path: `${PATH}.env.hum`,
-  render: value => <span><Icon icon={<WiHumidity size="1.4em" />} /> {value}%</span>
+  render: value => (
+    <span>
+      <Icon icon={<WiHumidity size="1.4em" />} /> {value}%
+      <Trend topic={`${TOPIC}_env_hum`} lastHours={2} measure="%"/>
+    </span>
+  )
 })(MqttValue);
 
 const EnvLight = withMqttValue({
   topic: `${TOPIC}/env/light`,
   path: `${PATH}.env.light`,
-  render: value => <span><Icon icon={<WiHorizonAlt size="1.4em" />} /> {value}%</span>
+  render: value => (
+    <span>
+      <Icon icon={<WiHorizonAlt size="1.4em" />} /> {value}%
+      <Trend topic={`${TOPIC}_env_light`} lastHours={2} measure="%"/>
+    </span>
+  )
 })(MqttValue);
 
 const WaterTemp = withMqttValue({
   topic: `${TOPIC}/water/temp`,
   path: `${PATH}.water.temp`,
-  render: value => <span><Icon icon={<WiThermometer size="1.4em" />} /> {value}°</span>
+  render: value => (
+    <span>
+      <Icon icon={<WiThermometer size="1.4em" />} /> {value}°
+      <Trend topic={`${TOPIC}_water_temp`} lastHours={2} measure="°"/>
+    </span>
+  )
 })(MqttValue);
 
 const WaterEC = withMqttValue({
   topic: `${TOPIC}/water/ec`,
   path: `${PATH}.water.ec`,
-  render: value => <span><Icon iconSize={20} icon="pulse" /> {value} s</span>
+  render: value => (
+    <span>
+      <Icon iconSize={20} icon="pulse" /> {value} s
+      <Trend topic={`${TOPIC}_water_ec`} lastHours={2} measure="s"/>
+    </span>
+  )
 })(MqttValue);
 
 const WaterTDS = withMqttValue({
   topic: `${TOPIC}/water/tds`,
   path: `${PATH}.water.tds`,
-  render: value => <span><Icon iconSize={20} icon="heatmap" /> {parseInt(value, 10)} ppm</span>
+  render: value => (
+    <span>
+      <Icon iconSize={20} icon="heatmap" /> {parseInt(value, 10)} ppm
+      <Trend topic={`${TOPIC}_water_tds`} lastHours={2} measure="ppm"/>
+    </span>
+  )
 })(MqttValue);
 
 const PumpState = withMqttValue({
   topic: `${TOPIC}/water/pump/state`,
   path: `${PATH}.water.pump.state`,
-  render: value => <span><Icon iconSize={20} icon="power" /> {
-    ['OFF', 'ON', 'LOW LEVEL', 'NO FLOW'][Number(value)]
-  }</span>
+  render: value => (
+    <span>
+      <Icon iconSize={20} icon="power" /> {['OFF', 'ON', 'LOW LEVEL', 'NO FLOW'][Number(value)]}
+      <Trend topic={`${TOPIC}_water_pump_state`} lastHours={4} measure=""/>
+    </span>
+  )
 })(MqttValue);
 
 const PumpFlow = withMqttValue({
   topic: `${TOPIC}/water/pump/flow`,
   path: `${PATH}.water.pump.flow`,
-  render: value => <span><Icon iconSize={20} icon="dashboard" /> {value} lts/h</span>
+  render: value => (
+    <span>
+      <Icon iconSize={20} icon="dashboard" /> {value} lts/h
+      <Trend topic={`${TOPIC}_water_pump_flow`} lastHours={4} measure="lts/h"/>
+    </span>
+  )
 })(MqttValue);
 
 const BoxTemp = withMqttValue({
   topic: `${TOPIC}/box/temp`,
   path: `${PATH}.box.temp`,
-  render: value => <span><Icon icon={<WiThermometer size="1.4em" />} /> {value}°</span>
+  render: value => (
+    <span>
+      <Icon icon={<WiThermometer size="1.4em" />} /> {value}°
+      <Trend topic={`${TOPIC}_box_temp`} lastHours={2} measure="*"/>
+    </span>
+  )
 })(MqttValue);
 
 const oneSec = 1000;
@@ -142,6 +186,14 @@ const hours3 = 10800;
 const getDateString = secs => (new Date(secs * oneSec + hours3 * oneSec)).toLocaleString()
 
 const BoxTime = withMqttValue({
+  topic: `${TOPIC}/box/time`,
+  path: `${PATH}.box.time`,
+  render: value => <span><Icon iconSize={20} icon="time" /> {
+    value ? getDateString(value) : ''
+  }</span>
+})(MqttValue);
+
+const TrendEnvTemp = withMqttValue({
   topic: `${TOPIC}/box/time`,
   path: `${PATH}.box.time`,
   render: value => <span><Icon iconSize={20} icon="time" /> {
