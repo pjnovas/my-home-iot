@@ -193,14 +193,6 @@ const BoxTime = withMqttValue({
   }</span>
 })(MqttValue);
 
-const TrendEnvTemp = withMqttValue({
-  topic: `${TOPIC}/box/time`,
-  path: `${PATH}.box.time`,
-  render: value => <span><Icon iconSize={20} icon="time" /> {
-    value ? getDateString(value) : ''
-  }</span>
-})(MqttValue);
-
 const Title = props => <BPTag minimal large intent={Intent.PRIMARY} {...props}/>
 
 const Tower = ({ online, onAction }) => (

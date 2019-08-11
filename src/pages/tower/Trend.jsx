@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
+import get from 'lodash/get';
 import styled from 'styled-components';
 import axios from 'axios';
 import { Chart } from 'react-charts'
@@ -52,7 +53,7 @@ const Trend = ({ topic, lastHours, measure }) => {
 
   if(data === null) return null;
   return (
-    <ChartCtn title={`Last ${lastHours} hours: ${data[0].data[0][1]}${measure}`} >
+    <ChartCtn title={`Last ${lastHours} hours: ${get(data, '[0].data[0][1]', 0)}${measure}`} >
       <Chart data={data} axes={axes} series={series}/>
     </ChartCtn>
   );
