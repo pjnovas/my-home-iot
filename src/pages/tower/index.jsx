@@ -41,6 +41,10 @@ const Card = styled(BPCard)`
   padding-bottom: 40px;
   position: relative;
 
+  @media only screen and (max-width: 600px) {
+    flex-direction: column;
+  }
+
   .bp3-tag {
     position: absolute;
     bottom: 5px;
