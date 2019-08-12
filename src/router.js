@@ -10,7 +10,8 @@ const routesMap = [
   ['HOME', '/'],
   ['HEATER', '/heater'],
   ['POWER', '/power'],
-  ['TOWER', '/tower']
+  ['TOWER', '/tower'],
+  ['TOWER_LOGS', '/tower/logs']
 ];
 
 export const routes = fromPairs(routesMap.map(([page, route]) => [`PAGE_${page}`, route]))

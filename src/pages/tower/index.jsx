@@ -8,10 +8,12 @@ import compose from 'lodash/fp/compose';
 import styled from 'styled-components';
 import { Icon, Tag as BPTag, Card as BPCard, Intent, ButtonGroup, Button } from "@blueprintjs/core";
 import { WiHorizonAlt, WiHumidity, WiThermometer } from "react-icons/wi";
+import { format } from 'date-fns';
 
 import Layout from 'components/layout';
 import Status from 'components/status';
 import Trend from './Trend';
+
 import withMqttValue from 'hoc/withMqttValue';
 
 const TOPIC = 'tower-1';
@@ -183,7 +185,8 @@ const BoxTemp = withMqttValue({
 
 const oneSec = 1000;
 const hours3 = 10800;
-const getDateString = secs => (new Date(secs * oneSec + hours3 * oneSec)).toLocaleString()
+// const getDateString = secs => (new Date(secs * oneSec + hours3 * oneSec)).toLocaleString()
+const getDateString = secs => format(new Date(secs * oneSec + hours3 * oneSec), 'dd/MM HH:mm:ss');
 
 const BoxTime = withMqttValue({
   topic: `${TOPIC}/box/time`,

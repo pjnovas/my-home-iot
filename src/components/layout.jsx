@@ -20,9 +20,9 @@ const Content = styled.div`
   padding-top: 50px;
 `;
 
-const Layout = ({ children }) => (
+const Layout = ({ noHeader, children }) => (
   <div className={Classes.DARK}>
-    <Header />
+    {!noHeader && <Header />}
     <Content>
       {children}
     </Content>

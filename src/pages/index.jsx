@@ -9,13 +9,15 @@ import NotFound from './notFound';
 import Heater from './heater';
 import Power from './power';
 import Tower from './tower';
+import TowerLogs from './tower/logs';
 
 export const components = {
   PAGE_HOME: 'Home',
   [NOT_FOUND]: 'NotFound',
   PAGE_HEATER: 'Heater',
   PAGE_POWER: 'Power',
-  PAGE_TOWER: 'Tower'
+  PAGE_TOWER: 'Tower',
+  PAGE_TOWER_LOGS: 'TowerLogs'
 };
 
 const Pages = {
@@ -23,7 +25,8 @@ const Pages = {
   NotFound,
   Heater,
   Power,
-  Tower
+  Tower,
+  TowerLogs
 };
 
 export const initialState = { current: components.PAGE_HOME };
