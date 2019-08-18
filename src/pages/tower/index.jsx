@@ -6,7 +6,7 @@ import prop from 'lodash/fp/prop';
 import compose from 'lodash/fp/compose';
 
 import styled from 'styled-components';
-import { Icon, Tag as BPTag, Card as BPCard, Intent, ButtonGroup, Button } from "@blueprintjs/core";
+import { Icon, Tag as BPTag, Card as BPCard, Intent, ButtonGroup, Button, Popover } from "@blueprintjs/core";
 import { WiHorizonAlt, WiHumidity, WiThermometer } from "react-icons/wi";
 import { format } from 'date-fns';
 
@@ -29,6 +29,26 @@ const Content = styled.div`
   flex-direction: column;
   flex: 1;
   padding: 10px;
+`;
+
+const PopoverContent = styled.div`
+  padding: 1em;
+  text-align: center;
+
+  h2 {
+    text-align: center;
+    margin-top: 0.3em;
+  }
+
+  button {
+    margin: 0.5em;
+  }
+`;
+
+const ResetCtn = styled.div`
+  position: absolute;
+  left: 1em;
+  bottom: 1em;
 `;
 
 const Card = styled(BPCard)`
@@ -224,14 +244,24 @@ const Tower = ({ online, onAction }) => (
           <PumpState />
           <PumpFlow />
           <Buttons>
-            <Button onClick={() => onAction('1')} large icon="play" intent={Intent.SUCCESS} disabled={!online}/>
-            <Button onClick={() => onAction('0')} large icon="stop" intent={Intent.DANGER} disabled={!online}/>
+            <Button onClick={() => onAction('/water/pump/power', '1')} large icon="play" intent={Intent.SUCCESS} disabled={!online}/>
+            <Button onClick={() => onAction('/water/pump/power', '0')} large icon="stop" intent={Intent.DANGER} disabled={!online}/>
           </Buttons>
         </Card>
         <Card>
           <Title>System</Title>
           <BoxTemp />
           <BoxTime />
+          <ResetCtn>
+            <Popover disabled={!online} minimal captureDismiss hasBackdrop content={
+              <PopoverContent>
+                <h2>Reset Arduino?</h2>
+                <Button large onClick={() => onAction('/box/reset', '1')} intent={Intent.DANGER}>RESET</Button>
+              </PopoverContent>
+            } target={
+              <Button large icon="reset" intent={Intent.DANGER}/>
+            } />
+          </ResetCtn>
         </Card>
       </Values>
     </Content>
@@ -252,9 +282,10 @@ export default connect(
     prop('mqtt.online')
   ),
   dispatch => ({
-    onAction: message => dispatch({
-      type: 'MQTT/PUBLISH',
-      payload: { topic: `${TOPIC}/water/pump/power`, message }
-    }),
+    onAction: (type, message) => 
+      dispatch({
+        type: 'MQTT/PUBLISH',
+        payload: { topic: `${TOPIC}${type}`, message }
+      })
   })
 )(Tower);
