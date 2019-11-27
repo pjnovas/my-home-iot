@@ -7,6 +7,7 @@ import { NOT_FOUND } from 'redux-first-router';
 import Home from './home';
 import NotFound from './notFound';
 import Heater from './heater';
+import Light from './light';
 import Power from './power';
 import Tower from './tower';
 import TowerLogs from './tower/logs';
@@ -15,6 +16,7 @@ export const components = {
   PAGE_HOME: 'Home',
   [NOT_FOUND]: 'NotFound',
   PAGE_HEATER: 'Heater',
+  PAGE_LIGHT: 'Light',
   PAGE_POWER: 'Power',
   PAGE_TOWER: 'Tower',
   PAGE_TOWER_LOGS: 'TowerLogs'
@@ -24,6 +26,7 @@ const Pages = {
   Home,
   NotFound,
   Heater,
+  Light,
   Power,
   Tower,
   TowerLogs

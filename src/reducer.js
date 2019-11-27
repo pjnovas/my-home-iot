@@ -34,6 +34,13 @@ const power = handleActions({
   ...statusInitial
 });
 
+const lamp = handleActions({
+  ...status('LAMP')
+}, {
+  topic: 'lamp-x',
+  ...statusInitial
+});
+
 const tower = handleActions({
   ...status('TOWER'),
   'MQTT/MESSAGE': (state, { payload }) => {
@@ -62,6 +69,7 @@ export default combineReducers({
   location: router.reducer,
   pages,
   mqtt,
+  lamp,
   power,
   heater,
   tower

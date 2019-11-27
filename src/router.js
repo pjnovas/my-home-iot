@@ -10,6 +10,7 @@ const routesMap = [
   ['HOME', '/'],
   ['HEATER', '/heater'],
   ['POWER', '/power'],
+  ['LIGHT', '/light'],
   ['TOWER', '/tower'],
   ['TOWER_LOGS', '/tower/logs']
 ];
